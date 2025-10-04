@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  vault:
+    image: vault:1.13.2
+    container_name: wisefido-vault
+    restart: always
+    ports:
+      - "8200:8200"
+    cap_add:
+      - IPC_LOCK
+    environment:
+      - VAULT_ADDR=https://ca.wisefido.work:8200
+    command: vault server -config=/vault/config/01_vault.hcl
+    volumes:
+      - ../02_config:/vault/config:ro
+      - vault_data:/vault/data
+      - vault_logs:/vault/logs
+
+volumes:
+  vault_data:
+  vault_logs:
