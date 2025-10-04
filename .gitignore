@@ -1,0 +1,5 @@
+# 忽略所有名为 desktop.ini 的文件
+desktop.ini
+
+# 忽略所有名为 thumbs.db 的文件（另一个常见的 Windows 缓存文件）
+Thumbs.db
