@@ -1,8 +1,12 @@
 # 📦 卷 00：WiseFido CA 设计说明书 — 交付物总览
 
-**版本：v1.0**
-**发布日期：2025-10-04**
-**编制单位：WiseFido Engineering & Compliance Department**
+## 🧾 0.A 修订说明（Version 1.1）
+
+| 版本 | 日期 | 修订内容 | 说明 |
+|------|------|-----------|------|
+| v1.0 | 2025-10-04 | 初版发布 | 建立 CA 系统架构与文档体系 |
+| **v1.1** | **2025-10-05** | 增补 `06_setup_test_and_validate.sh` 与 `07_setup_device_role.sh` 脚本至目录结构；新增脚本清单与描述表 | 修订人：WiseFido 工程架构组 |
+
 
 ---
 
@@ -178,7 +182,8 @@ graph TD
 │   ├── 03_setup_generate_root_ca.sh
 │   ├── 04_setup_create_intermediate_ca.sh
 │   ├── 05_setup_configure_https.sh
-│   └── 06_setup_test_and_validate.sh
+│   ├── 06_setup_test_and_validate.sh
+│   └── 07_setup_device_role.sh
 └── 05_opt/
     └── 01_wisefido-ca/
         ├── 01_root/
@@ -211,6 +216,20 @@ graph TD
 | 7    | 生成卷 07《未来扩展与 Google CAS 对接建议》 | `01_docs/07_WiseFido_CA_未来扩展与Google_CAS对接建议.md`         |
 
 ---
+
+## 🧭 附录A：脚本清单与描述表（权威索引）
+
+> 目录：`04_scripts/`。脚本必须按编号顺序执行。
+
+| 编号 | 文件名                                 | 所属阶段 | 归属卷 | 描述                                                                                |
+| ---- | -------------------------------------- | -------- | ------ | ----------------------------------------------------------------------------------- |
+| 01   | `01_setup_init_vault.sh`             | 部署     | 卷 02  | 启动容器并初始化 Vault（生成 Unseal Keys 与 Root Token；若无 TLS 自动生成临时自签） |
+| 02   | `02_setup_unseal_vault.sh`           | 部署     | 卷 02  | 使用 2 把 Unseal Key 解封 Vault                                                     |
+| 03   | `03_setup_generate_root_ca.sh`       | 部署     | 卷 02  | 启用 Root PKI，生成 Root CA（导出 JSON、.crt/.key），并启用审计                     |
+| 04   | `04_setup_create_intermediate_ca.sh` | 配置     | 卷 02  | 创建并导入 Intermediate CA，配置 issuing/CRL URLs                                   |
+| 05   | `05_setup_configure_https.sh`        | 配置     | 卷 02  | 使用 Intermediate 签发 `ca.wisefido.work` HTTPS 证书并重启                        |
+| 06   | `06_setup_test_and_validate.sh`      | 验证     | 卷 02  | 全量自检（证书链、TLS、审计、API健康）                                              |
+| 07   | `07_setup_device_role.sh`            | 注册     | 卷 04  | 在 pki_int 创建 `device-role`，用于 IoT 设备证书签发                              |
 
 **编制人：** WiseFido 系统架构组
 **审核人：** Chief Security Officer
