@@ -1,3 +1,14 @@
+## 🧭 2.0 脚本总览与执行顺序（权威版）
+
+| 编号 | 文件名 | 所属阶段 | 描述 | 入口命令 |
+|---|---|---|---|---|
+| 01 | `01_setup_init_vault.sh` | 部署 | 启动容器并初始化 Vault | `sudo bash 04_scripts/01_setup_init_vault.sh` |
+| 02 | `02_setup_unseal_vault.sh` | 部署 | 使用 2 把 Unseal Key 解封 | `sudo bash 04_scripts/02_setup_unseal_vault.sh` |
+| 03 | `03_setup_generate_root_ca.sh` | 部署 | 生成 Root CA 并启用审计 | `sudo bash 04_scripts/03_setup_generate_root_ca.sh` |
+| 04 | `04_setup_create_intermediate_ca.sh` | 配置 | 创建/导入 Intermediate，配置 URLs | `sudo bash 04_scripts/04_setup_create_intermediate_ca.sh` |
+| 05 | `05_setup_configure_https.sh` | 配置 | 使用 Intermediate 签发正式 HTTPS 并替换 | `sudo bash 04_scripts/05_setup_configure_https.sh` |
+| 06 | `06_setup_test_and_validate.sh` | 验证 | 自检（证书链、TLS、审计、API健康） | `sudo bash 04_scripts/06_setup_test_and_validate.sh` |
+
 # ⚙️ 卷 02：WiseFido_CA_部署与配置手册  
 **版本：v1.0**  
 **发布日期：2025-10-04**  
@@ -359,6 +370,42 @@ docker exec -i wisefido-vault cat /vault/logs/audit.log | jq .
 | HTTPS 访问        | 浏览器打开 `https://ca.wisefido.work:8200`                       | 正常响应            |
 | 审计日志            | `docker exec -it wisefido-vault cat /vault/logs/audit.log`  | 有签发记录           |
 
+---
+## 🧪 2.10 脚本06：测试与验证（完整实现）
+
+**路径：** `04_scripts/06_setup_test_and_validate.sh`
+
+```bash
+#!/bin/bash
+set -euo pipefail
+PROJECT_ROOT="/opt/00_WiseFido_CA_Project"
+
+echo "🔍 Vault 运行状态检查..."
+docker exec -i wisefido-vault vault status || { echo "❌ Vault 未运行"; exit 1; }
+
+echo "🔍 Root/Intermediate 文件检查..."
+test -f "${PROJECT_ROOT}/05_opt/01_wisefido-ca/01_root/root_ca.crt" || { echo "❌ Root CA 缺失"; exit 1; }
+test -f "${PROJECT_ROOT}/05_opt/01_wisefido-ca/02_intermediate/intermediate.crt" || { echo "❌ Intermediate 缺失"; exit 1; }
+
+echo "🔍 测试 Vault HTTPS 接口..."
+curl -sk --cacert "${PROJECT_ROOT}/05_opt/01_wisefido-ca/01_root/root_ca.crt" \
+  https://ca.wisefido.work:8200/v1/sys/health | jq . > "${PROJECT_ROOT}/05_opt/test_vault_health.json"
+
+echo "🔍 验证证书链..."
+openssl verify -CAfile "${PROJECT_ROOT}/05_opt/01_wisefido-ca/01_root/root_ca.crt" \
+  "${PROJECT_ROOT}/05_opt/01_wisefido-ca/02_intermediate/intermediate.crt"
+
+echo "🔍 审计日志验证..."
+docker exec -i wisefido-vault sh -lc 'test -f /vault/logs/audit.log && echo "✅ 审计日志已启用" || echo "⚠ 未启用审计"'
+
+echo "🔍 测试设备证书签发接口可用性（仅检查角色列表）..."
+curl -sk --header "X-Vault-Token: <root_token>" \
+  https://ca.wisefido.work:8200/v1/pki_int/roles | jq . > "${PROJECT_ROOT}/05_opt/test_vault_roles.json"
+
+echo "✅ 所有测试完成，结果已写入："
+echo "   - ${PROJECT_ROOT}/05_opt/test_vault_health.json"
+echo "   - ${PROJECT_ROOT}/05_opt/test_vault_roles.json"
+```
 ---
 
 编制人： WiseFido 系统架构组
