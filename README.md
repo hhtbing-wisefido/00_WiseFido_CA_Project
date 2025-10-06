@@ -58,33 +58,69 @@ repo-root/
 ├── 07_WiseFido_CA_未来演进与可持续信任蓝图.md ←（分支起点，不推翻 00–06）
 └── README.md ←（本文件）
 
-## 📂 WiseFido CA 项目目录结构（纯 Markdown 树形展示）
+## 📘 WiseFido CA 项目目录结构（PlantUML 竖向树）
 
-📁 repo-root/
-├── 00_WiseFido_CA_交付物总览.md
-├── 01_WiseFido_CA_总体设计说明.md
-├── 02_WiseFido_CA_部署与配置手册/
-│   ├── 02_docker/
-│   │   ├── 01_docker-compose.yml
-│   │   └── 02_Dockerfile.vault
-│   ├── 02_config/
-│   │   └── 01_vault.hcl
-│   └── 02_scripts/
-│       ├── 01_setup_init_vault.sh
-│       ├── 02_setup_unseal_vault.sh
-│       ├── 03_setup_generate_root_ca.sh
-│       ├── 04_setup_create_intermediate_ca.sh
-│       ├── 05_setup_configure_https.sh
-│       ├── 06_setup_test_and_validate.sh
-│       └── 07_setup_device_role.sh
-├── 03_WiseFido_CA_证书体系与文件命名规范.md
-├── 04_WiseFido_IoT_设备注册与证书签发流程.md
-├── 05_WiseFido_CA_方案对比与选型说明.md
-├── 06_WiseFido_CA_HIPAA_合规与风险评估/
-│   └── patches/
-│       └── 06_patch_6.10_桥接到卷07.md
-├── 07_WiseFido_CA_未来演进与可持续信任蓝图.md
-└── README.md
+```plantuml
+@startuml
+title WiseFido CA 项目目录结构
+skinparam folderBackgroundColor #F3F4F6
+skinparam folderBorderColor #4B5563
+skinparam fileBackgroundColor #E0F2FE
+skinparam fileBorderColor #0284C7
+skinparam noteBackgroundColor #FEF9C3
+skinparam noteBorderColor #F59E0B
+skinparam defaultTextAlignment left
+skinparam Shadowing false
+
+folder "repo-root" as root {
+  
+  file "00_WiseFido_CA_交付物总览.md"
+  file "01_WiseFido_CA_总体设计说明.md"
+
+  folder "02_WiseFido_CA_部署与配置手册" as deploy {
+      folder "02_docker" {
+          file "01_docker-compose.yml"
+          file "02_Dockerfile.vault"
+      }
+      folder "02_config" {
+          file "01_vault.hcl"
+      }
+      folder "02_scripts" {
+          file "01_setup_init_vault.sh"
+          file "02_setup_unseal_vault.sh"
+          file "03_setup_generate_root_ca.sh"
+          file "04_setup_create_intermediate_ca.sh"
+          file "05_setup_configure_https.sh"
+          file "06_setup_test_and_validate.sh"
+          file "07_setup_device_role.sh"
+      }
+  }
+
+  file "03_WiseFido_CA_证书体系与文件命名规范.md"
+  file "04_WiseFido_IoT_设备注册与证书签发流程.md"
+  file "05_WiseFido_CA_方案对比与选型说明.md"
+
+  folder "06_WiseFido_CA_HIPAA_合规与风险评估" as risk {
+      folder "patches" {
+          file "06_patch_6.10_桥接到卷07.md"
+      }
+  }
+
+  file "07_WiseFido_CA_未来演进与可持续信任蓝图.md"
+  note right of root::07_WiseFido_CA_未来演进与可持续信任蓝图.md
+    分支起点，不推翻卷 00–06  
+    Cloud Branch：阿里云 IoT CA（美国区 BAA） + Vault Root
+  end note
+
+  file "README.md"
+  note right of root::README.md
+    本文件，仓库说明与入口文档  
+    包含 Mermaid / PlantUML 可视结构
+  end note
+}
+@enduml
+
+```
 
 
 ## 解读
