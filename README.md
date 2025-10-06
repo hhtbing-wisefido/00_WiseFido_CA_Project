@@ -58,58 +58,34 @@ repo-root/
 ├── 07_WiseFido_CA_未来演进与可持续信任蓝图.md ←（分支起点，不推翻 00–06）
 └── README.md ←（本文件）
 
+## 📂 WiseFido CA 项目目录结构（纯 Markdown 树形展示）
 
-## 📦 WiseFido CA 项目文件结构（✅ 竖向树稳定版）
+📁 repo-root/
+├── 00_WiseFido_CA_交付物总览.md
+├── 01_WiseFido_CA_总体设计说明.md
+├── 02_WiseFido_CA_部署与配置手册/
+│   ├── 02_docker/
+│   │   ├── 01_docker-compose.yml
+│   │   └── 02_Dockerfile.vault
+│   ├── 02_config/
+│   │   └── 01_vault.hcl
+│   └── 02_scripts/
+│       ├── 01_setup_init_vault.sh
+│       ├── 02_setup_unseal_vault.sh
+│       ├── 03_setup_generate_root_ca.sh
+│       ├── 04_setup_create_intermediate_ca.sh
+│       ├── 05_setup_configure_https.sh
+│       ├── 06_setup_test_and_validate.sh
+│       └── 07_setup_device_role.sh
+├── 03_WiseFido_CA_证书体系与文件命名规范.md
+├── 04_WiseFido_IoT_设备注册与证书签发流程.md
+├── 05_WiseFido_CA_方案对比与选型说明.md
+├── 06_WiseFido_CA_HIPAA_合规与风险评估/
+│   └── patches/
+│       └── 06_patch_6.10_桥接到卷07.md
+├── 07_WiseFido_CA_未来演进与可持续信任蓝图.md
+└── README.md
 
-```mermaid
-flowchart BT
-    subgraph LEVEL0["📁 repo-root/"]
-        L00["00_WiseFido_CA_交付物总览.md"]
-        L01["01_WiseFido_CA_总体设计说明.md"]
-        L02["02_WiseFido_CA_部署与配置手册.md"]
-        L03["03_WiseFido_CA_证书体系与文件命名规范.md"]
-        L04["04_WiseFido_IoT_设备注册与证书签发流程.md"]
-        L05["05_WiseFido_CA_方案对比与选型说明.md"]
-        L06["06_WiseFido_CA_HIPAA_合规与风险评估.md"]
-        L07["07_WiseFido_CA_未来演进与可持续信任蓝图.md"]
-        L99["README.md"]
-    end
-
-    %% 子目录 02
-    L02 --> D02["📘 02_WiseFido_CA_部署与配置手册/"]
-    D02 --> D02_DOCK["02_docker/"]
-    D02_DOCK --> D02_DOCK1["01_docker-compose.yml"]
-    D02_DOCK --> D02_DOCK2["02_Dockerfile.vault"]
-    D02 --> D02_CFG["02_config/"]
-    D02_CFG --> D02_CFG1["01_vault.hcl"]
-    D02 --> D02_SCR["02_scripts/"]
-    D02_SCR --> D02_S1["01_setup_init_vault.sh"]
-    D02_SCR --> D02_S2["02_setup_unseal_vault.sh"]
-    D02_SCR --> D02_S3["03_setup_generate_root_ca.sh"]
-    D02_SCR --> D02_S4["04_setup_create_intermediate_ca.sh"]
-    D02_SCR --> D02_S5["05_setup_configure_https.sh"]
-    D02_SCR --> D02_S6["06_setup_test_and_validate.sh"]
-    D02_SCR --> D02_S7["07_setup_device_role.sh"]
-
-    %% 子目录 06
-    L06 --> D06["📗 06_WiseFido_CA_HIPAA_合规与风险评估/"]
-    D06 --> D06_PATCH["patches/"]
-    D06_PATCH --> D06_PATCH1["06_patch_6.10_桥接到卷07.md"]
-
-    %% 样式（清晰层级）
-    classDef root fill:#bae6fd,stroke:#0284c7,color:#000,font-weight:bold;
-    classDef docs fill:#dbeafe,stroke:#2563eb,color:#000;
-    classDef config fill:#e5e7eb,stroke:#6b7280,color:#000;
-    classDef scripts fill:#dcfce7,stroke:#16a34a,color:#000;
-    classDef patch fill:#fef9c3,stroke:#f59e0b,color:#000;
-
-    class LEVEL0 root
-    class L00,L01,L02,L03,L04,L05,L06,L07,L99 docs
-    class D02_CFG,D02_CFG1 config
-    class D02_SCR,D02_S1,D02_S2,D02_S3,D02_S4,D02_S5,D02_S6,D02_S7 scripts
-    class D06_PATCH,D06_PATCH1 patch
-
-```
 
 ## 解读
 
