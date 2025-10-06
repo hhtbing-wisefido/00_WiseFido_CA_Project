@@ -58,52 +58,57 @@ repo-root/
 ├── 07_WiseFido_CA_未来演进与可持续信任蓝图.md ←（分支起点，不推翻 00–06）
 └── README.md ←（本文件）
 
-**说明要点**
 
-- `02_scripts/06_setup_test_and_validate.sh` 与 `07_setup_device_role.sh` 均已在 **卷 00（v1.1）目录树**与**卷 02**引用与解释；
-  - `06` 用于证书链、TLS、审计的端到端校验；
-  - `07` 在 **卷 04**详解设备角色/Role 与 CSR 签发路径。
-- 卷 06 新增 **6.10 桥接段**（文件化为 `06_patch_6.10_桥接到卷07.md`）用于将“本地自建 CA 基线”**平滑接入**“卷 07 的演进分支”。
-
----
-
-## 3. 卷 06 ⇄ 卷 07 桥接关系（Mermaid）
-
-> 该图仅表达**文档与决策**的依赖关系，不代表运行时调用链。
+## 📦 WiseFido CA 项目文件结构（✅ 竖向树稳定版）
 
 ```mermaid
-flowchart TB
-  subgraph BASELINE["卷00–卷06：本地自建 CA（方案 B 基线）"]
-    V00["卷00 交付物总览"]
-    V01["卷01 总体设计说明"]
-    V02["卷02 部署与配置手册"]
-    V03["卷03 证书体系与命名规范"]
-    V04["卷04 设备注册与证书签发流程"]
-    V05["卷05 方案对比与选型说明"]
-    V06["卷06 HIPAA 合规与风险评估"]
-  end
+flowchart BT
+    subgraph LEVEL0["📁 repo-root/"]
+        L00["00_WiseFido_CA_交付物总览.md"]
+        L01["01_WiseFido_CA_总体设计说明.md"]
+        L02["02_WiseFido_CA_部署与配置手册.md"]
+        L03["03_WiseFido_CA_证书体系与文件命名规范.md"]
+        L04["04_WiseFido_IoT_设备注册与证书签发流程.md"]
+        L05["05_WiseFido_CA_方案对比与选型说明.md"]
+        L06["06_WiseFido_CA_HIPAA_合规与风险评估.md"]
+        L07["07_WiseFido_CA_未来演进与可持续信任蓝图.md"]
+        L99["README.md"]
+    end
 
-  subgraph BRIDGE["卷06 · 6.10 桥接段（patch）"]
-    P610["6.10 从自建基线桥接到未来演进"]
-  end
+    %% 子目录 02
+    L02 --> D02["📘 02_WiseFido_CA_部署与配置手册/"]
+    D02 --> D02_DOCK["02_docker/"]
+    D02_DOCK --> D02_DOCK1["01_docker-compose.yml"]
+    D02_DOCK --> D02_DOCK2["02_Dockerfile.vault"]
+    D02 --> D02_CFG["02_config/"]
+    D02_CFG --> D02_CFG1["01_vault.hcl"]
+    D02 --> D02_SCR["02_scripts/"]
+    D02_SCR --> D02_S1["01_setup_init_vault.sh"]
+    D02_SCR --> D02_S2["02_setup_unseal_vault.sh"]
+    D02_SCR --> D02_S3["03_setup_generate_root_ca.sh"]
+    D02_SCR --> D02_S4["04_setup_create_intermediate_ca.sh"]
+    D02_SCR --> D02_S5["05_setup_configure_https.sh"]
+    D02_SCR --> D02_S6["06_setup_test_and_validate.sh"]
+    D02_SCR --> D02_S7["07_setup_device_role.sh"]
 
-  subgraph FUTURE["卷07：未来演进与可持续信任蓝图（分支起点）"]
-    V07["卷07 演进蓝图（不推翻既有基线）"]
-    V07A["分支A：继续强化 Vault 自建（HA/HSM/CRL/OCSP/多租户）"]
-    V07B["分支B：托管 CA 试点（例如 Google Cloud CAS / 阿里云 IoT CA(美国区)）"]
-  end
+    %% 子目录 06
+    L06 --> D06["📗 06_WiseFido_CA_HIPAA_合规与风险评估/"]
+    D06 --> D06_PATCH["patches/"]
+    D06_PATCH --> D06_PATCH1["06_patch_6.10_桥接到卷07.md"]
 
-  V00 --> V01 --> V02 --> V03 --> V04 --> V05 --> V06 --> P610 --> V07
-  V07 --> V07A
-  V07 --> V07B
+    %% 样式（清晰层级）
+    classDef root fill:#bae6fd,stroke:#0284c7,color:#000,font-weight:bold;
+    classDef docs fill:#dbeafe,stroke:#2563eb,color:#000;
+    classDef config fill:#e5e7eb,stroke:#6b7280,color:#000;
+    classDef scripts fill:#dcfce7,stroke:#16a34a,color:#000;
+    classDef patch fill:#fef9c3,stroke:#f59e0b,color:#000;
 
-  classDef core fill:#0ea5e9,stroke:#0b4d71,color:#fff
-  classDef patch fill:#f59e0b,stroke:#7c4a03,color:#111
-  classDef branch fill:#10b981,stroke:#0a5a3a,color:#fff
+    class LEVEL0 root
+    class L00,L01,L02,L03,L04,L05,L06,L07,L99 docs
+    class D02_CFG,D02_CFG1 config
+    class D02_SCR,D02_S1,D02_S2,D02_S3,D02_S4,D02_S5,D02_S6,D02_S7 scripts
+    class D06_PATCH,D06_PATCH1 patch
 
-  class V00,V01,V02,V03,V04,V05,V06 core
-  class P610 patch
-  class V07,V07A,V07B branch
 ```
 
 ## 解读
@@ -146,25 +151,23 @@ docker compose up -d
 
 ## 4.验证点
 
-* **curl -v https://ca.wisefido.work:8200：证书链、主机名匹配通过** 
+* **curl -v https://ca.wisefido.work:8200：证书链、主机名匹配通过**
 * **Vault pki_int 可签发 Server/Client 证书；CRL/OCSP 配置与审计日志可**
-  
+
 ---
+
 ## 5.典型使用场景与建议路径
 
 * 工厂烧录/注册：按 卷 04 的 CSR → 签发 → 证书回写规范执行。
-
 * 生产可运维：参考 卷 02 脚本 06_* 做体检校验。
-
 * 合规审计：以 卷 06 清单对照，留存审计轨迹（签发/吊销/访问）。
-
 * 向云托管试点：遵循 卷 06 · 6.10 桥接段 与 卷 07 的“分支 B”试点路线，先沙箱后灰度，前置 BAA/数据位移评估。
 
 ## 6. 变更与版本规范
 
-- **卷 00–卷 06**：仅通过 **补丁块（patches）** 方式增量修订（例如新增 `6.10`），**编号不变更**。  
-- **卷 07**：作为独立的“Cloud Branch 分支”文档，可随演进小版本迭代（`v1.1`、`v1.2`、`v1.3`…），但不得回写覆盖基线文档。  
-- 所有目录与文件名**保持编号稳定**，新增内容仅以“补丁”或“子文件”形式扩展。  
+- **卷 00–卷 06**：仅通过 **补丁块（patches）** 方式增量修订（例如新增 `6.10`），**编号不变更**。
+- **卷 07**：作为独立的“Cloud Branch 分支”文档，可随演进小版本迭代（`v1.1`、`v1.2`、`v1.3`…），但不得回写覆盖基线文档。
+- 所有目录与文件名**保持编号稳定**，新增内容仅以“补丁”或“子文件”形式扩展。
 - 所有合规修改必须更新到 **卷 00** 的交付物总览表中，并在 `README.md` 顶部标明版本号与日期。
 
 ---
@@ -173,20 +176,16 @@ docker compose up -d
 
 ### 📘 7.1 工作流
 
-1. **建议以 Issue + Pull Request 驱动**。  
-   每个 PR 必须说明影响范围（卷号/脚本/合规点）。
-2. **涉及安全核心的变更**（Root、Intermediate、吊销策略）  
-   必须 **双人复核 + 审计登记**。
-3. **云托管 CA 分支相关修改**  
-   需附带：
+1. **建议以 Issue + Pull Request 驱动**。每个 PR 必须说明影响范围（卷号/脚本/合规点）。
+2. **涉及安全核心的变更**（Root、Intermediate、吊销策略）必须 **双人复核 + 审计登记**。
+3. **云托管 CA 分支相关修改**需附带：
    - BAA 签署状态说明；
    - 数据驻留（Data Residency）确认；
    - 卷 07 风险对照表引用。
 
 ### 📘 7.2 命名规范与提交信息
 
-- 分支命名：`feature/卷号_功能名` 或 `fix/卷号_问题简述`  
-  示例：`feature/07_add_cloud_branch_model`
+- 分支命名：`feature/卷号_功能名` 或 `fix/卷号_问题简述`示例：`feature/07_add_cloud_branch_model`
 - 提交信息（Commit Message）建议结构：
 
 **[卷号] 修改内容**
@@ -233,42 +232,41 @@ class V0,V1,V2,V3,V4,V5,V6 main
 class P610 patch
 class V7,V7A,V7B branch
 ```
+
 **图示说明**
 
 * 卷 06 结束时通过 6.10 补丁自然衔接未来演进；
-
 * 卷 07 为 Cloud Branch 起点，评估阿里云 IoT CA（美国区 BAA）等托管化方案；
-
-
 * 两条路径（本地主线 / 云分支）并行存在，互不覆盖，保持可回退性。
+
 ---
+
 ## 📜 项目版本信息
 
-| 项目组件                 | 当前版本       | 状态     | 维护者                 |
-| -------------------- | ---------- | ------ | ------------------- |
-| Vault 自建 CA 主线       | v1.2       | ✅ 生产运行 | WiseFido Infra Team |
-| 卷 06 HIPAA 风险评估      | v1.2       | ✅ 审计通过 | Compliance Group    |
-| 卷 07 Cloud Branch 蓝图 | v1.3       | 🧭 规划中 | Security & Strategy |
-| 本 README             | 2025-10-06 | ✅ 最新同步 | Docs Maintainer     |
+| 项目组件                | 当前版本   | 状态        | 维护者              |
+| ----------------------- | ---------- | ----------- | ------------------- |
+| Vault 自建 CA 主线      | v1.2       | ✅ 生产运行 | WiseFido Infra Team |
+| 卷 06 HIPAA 风险评估    | v1.2       | ✅ 审计通过 | Compliance Group    |
+| 卷 07 Cloud Branch 蓝图 | v1.3       | 🧭 规划中   | Security & Strategy |
+| 本 README               | 2025-10-06 | ✅ 最新同步 | Docs Maintainer     |
+
 ---
+
 ## 🧠 总结说明
 
 ### 📘 主线与分支并行存在：
 
 * 卷 00–卷 06 = 当前生产可落地的 Vault 自建 CA 架构；
-
 * 卷 07 = 未来分支（Cloud Branch），规划在 阿里云 IoT CA（美国区 BAA） 或 Google CAS 托管条件下的可演进路线；
-
 * 所有文档间通过 卷 06·6.10 自然桥接，不会造成覆盖冲突。
 
 ## 📎 设计哲学：
 
 * 本地 Root 保主权；
-
 * 云端托管看合规；
-
 * 结构清晰、阶段分明、可回退、可扩展。
 
   ---
+
   维护者：WiseFido 合规与安全团队
-最后更新：2025-10-06
+  最后更新：2025-10-06
