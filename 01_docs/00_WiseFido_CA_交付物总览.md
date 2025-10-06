@@ -193,6 +193,54 @@ graph TD
         │   └── 01_devices/
         └── 04_crl/
 
+## 📂 WiseFido CA 项目文件结构（Mermaid 竖向树形版）
+
+```mermaid
+graph TB
+  A["00_WiseFido_CA_Project/"]
+
+  A --> D01["📘 01_docs/"]
+  A --> D02["⚙️ 02_config/"]
+  A --> D03["🚀 03_deploy/"]
+  A --> D04["🧩 04_scripts/"]
+  A --> D05["🗂️ 05_opt/"]
+
+  %% ────── 01_docs 层 ──────
+  D01 --> D01_00["00_WiseFido_CA_交付物总览.md"]
+  D01 --> D01_01["01_WiseFido_CA_总览与架构说明.md"]
+  D01 --> D01_02["02_WiseFido_CA_部署与配置手册.md"]
+  D01 --> D01_03["03_WiseFido_CA_证书体系与文件命名规范.md"]
+  D01 --> D01_04["04_WiseFido_IoT_设备注册与证书签发流程.md"]
+  D01 --> D01_05["05_WiseFido_CA_方案对比与选型说明.md"]
+  D01 --> D01_06["06_WiseFido_CA_HIPAA合规与风险评估.md"]
+  D01 --> D01_07["07_WiseFido_CA_未来扩展与Google_CAS对接建议.md"]
+
+  %% ────── 02_config 层 ──────
+  D02 --> D02_01["01_vault.hcl"]
+
+  %% ────── 03_deploy 层 ──────
+  D03 --> D03_01["01_docker-compose.yml"]
+
+  %% ────── 04_scripts 层 ──────
+  D04 --> D04_01["01_setup_init_vault.sh"]
+  D04 --> D04_02["02_setup_unseal_vault.sh"]
+  D04 --> D04_03["03_setup_generate_root_ca.sh"]
+  D04 --> D04_04["04_setup_create_intermediate_ca.sh"]
+  D04 --> D04_05["05_setup_configure_https.sh"]
+  D04 --> D04_06["06_setup_test_and_validate.sh"]
+  D04 --> D04_07["07_setup_device_role.sh"]
+
+  %% ────── 05_opt 层 ──────
+  D05 --> D05_01["01_wisefido-ca/"]
+  D05_01 --> D05_01A["01_root/"]
+  D05_01 --> D05_01B["02_intermediate/"]
+  D05_01 --> D05_01C["03_issued/"]
+  D05_01C --> D05_01C1["01_devices/"]
+  D05_01 --> D05_01D["04_crl/"]
+```
+
+
+
 说明：不新增目录，不改名，不换层级。容器内仍使用 /vault/{config,data,logs}，通过 Compose 挂载到上面的固定位置。
 
 > 📘 **命名与排序规则：**
