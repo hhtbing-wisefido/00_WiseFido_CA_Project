@@ -1,3 +1,4 @@
 {
-    "markdown-preview-enhanced.plantumlJarPath": "C:\\\\tools\\\\plantuml\\\\plantuml.jar"
+    "markdown-preview-enhanced.plantumlJarPath": "",
+    "markdown-preview-enhanced.plantumlServer": "https://kroki.io/plantuml/svg/"
 }
