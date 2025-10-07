@@ -59,7 +59,7 @@ repo-root/
 └── README.md ←（本文件）
 
 **如遇到GITHUB上面目录树显示不正常，参考下面的目录树图**
-![项目目录树](01_docs\image\tree-1-readme.png)
+
 ![项目目录树](01_docs/image/tree-1-readme.png)
 
 
