@@ -1,21 +1,23 @@
-# 02_config/01_vault.hcl  ——— 统一与卷 00 目录树
+# =============================
+# WiseFido Vault 主配置文件 (v2.0)
+# =============================
 
+ui = true
+log_level = "info"
+
+# 🔐 HTTPS 监听配置
 listener "tcp" {
   address       = "0.0.0.0:8200"
   tls_cert_file = "/vault/config/vault_cert.pem"
   tls_key_file  = "/vault/config/vault_key.pem"
 }
 
+# 💾 存储引擎（文件型）
 storage "file" {
   path = "/vault/data"
 }
 
+# 🌐 API 地址配置（与 Compose 环境变量一致）
 api_addr = "https://ca.wisefido.work:8200"
-ui       = true
-log_level = "info"
+cluster_addr = "https://ca.wisefido.work:8201"
 
-disable_mlock = true
-max_lease_ttl     = "87600h"
-default_lease_ttl = "43800h"
-
-# 审计请用 CLI 在脚本中启用，避免 HCL 冲突

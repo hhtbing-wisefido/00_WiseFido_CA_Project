@@ -8,4 +8,4 @@ docker exec -i wisefido-vault vault operator unseal "$key1"
 docker exec -i wisefido-vault vault operator unseal "$key2"
 
 docker exec -i wisefido-vault vault status
-echo "✅ Vault 已解封。"
+echo "✅ Vault 已成功解封。"

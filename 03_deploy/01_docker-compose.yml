@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   vault:
@@ -9,14 +9,16 @@ services:
       - "8200:8200"
     cap_add:
       - IPC_LOCK
+
+    # 🧩 目录挂载：配置、数据、日志
+    volumes:
+      - ../02_config:/vault/config
+      - ./vault/data:/vault/data
+      - ./vault/logs:/vault/logs
+
     environment:
       - VAULT_ADDR=https://ca.wisefido.work:8200
-    command: vault server -config=/vault/config/01_vault.hcl
-    volumes:
-      - ../02_config:/vault/config:ro
-      - vault_data:/vault/data
-      - vault_logs:/vault/logs
+      - VAULT_API_ADDR=https://ca.wisefido.work:8200
 
-volumes:
-  vault_data:
-  vault_logs:
+    # 🔧 启动命令：加载容器内的 /vault/config/01_vault.hcl
+    command: vault server -config=/vault/config/01_vault.hcl
