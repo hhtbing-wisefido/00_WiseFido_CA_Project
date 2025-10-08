@@ -40,7 +40,59 @@ graph TD
 
 🧩 3.3 目录结构总览（与《卷 00》保持一致）
 
-![项目目录树](/01_docs/image/tree-1-readme.png)
+```bash
+00_WiseFido_CA_Project/
+├── 01_docs/
+│   ├── 00_WiseFido_CA_交付物总览.md
+│   ├── 01_WiseFido_CA_总览与架构说明.md
+│   ├── 02_WiseFido_CA_部署与配置手册.md
+│   ├── 03_WiseFido_CA_证书体系与文件命名规范.md
+│   ├── 04_WiseFido_IoT_设备注册与证书签发流程.md
+│   ├── 05_WiseFido_CA_方案对比与选型说明.md
+│   ├── 06_WiseFido_CA_HIPAA合规与风险评估.md
+│   └── 07_WiseFido_CA_未来扩展与Google_CAS对接建议.md
+├── 02_config/
+│   └── 01_vault.hcl
+├── 03_deploy/
+│   └── 01_docker-compose.yml
+├── 04_scripts/
+│   ├── 01_setup_init_vault.sh
+│   ├── 02_setup_unseal_vault.sh
+│   ├── 03_setup_generate_root_ca.sh
+│   ├── 04_setup_create_intermediate_ca.sh
+│   ├── 05_setup_configure_https.sh
+│   ├── 06_setup_test_and_validate.sh
+│   └── 07_setup_device_role.sh
+└── 05_opt/
+    └── 01_wisefido-ca/
+        ├── 01_root/
+        │   ├── root_ca.crt
+        │   ├── root_ca.key
+        │   ├── root_ca_export.json
+        │   └── vault_init_keys.txt
+        ├── 02_intermediate/
+        │   ├── intermediate.csr
+        │   ├── intermediate.crt
+        │   ├── intermediate.srl
+        │   ├── intermediate_chain.crt
+        │   └── index.txt / serial （OpenSSL数据库文件）
+        ├── 03_issued/
+        │   ├── 01_devices/
+        │   │   ├── device_00001.crt
+        │   │   ├── device_00001.key
+        │   │   └── device_00001.json
+        │   ├── 02_servers/
+        │   │   ├── server_api.wisefido.work.crt
+        │   │   ├── server_api.wisefido.work.key
+        │   │   └── server_api.json
+        │   └── 03_admin/
+        │       ├── admin_ca.crt
+        │       └── admin_ca.key
+        └── 04_crl/
+            ├── crl_current.pem
+            ├── crl_previous.pem
+            └── crl_index.txt
+```
 
 📘 所有文件与目录均使用两位编号前缀，确保在系统中自然排序。
 
