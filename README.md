@@ -32,36 +32,8 @@
 
 > **编号一经确认即长期沿用**，所有新增仅在不破坏既定编号的前提下追加 **补丁块** 或 **子章节**。
 
-repo-root/
-├── 00_WiseFido_CA_交付物总览.md
-├── 01_WiseFido_CA_总体设计说明.md
-├── 02_WiseFido_CA_部署与配置手册.md
-│ ├── 02_docker/
-│ │ ├── 01_docker-compose.yml
-│ │ └── 02_Dockerfile.vault
-│ ├── 02_config/
-│ │ └── 01_vault.hcl
-│ └── 02_scripts/
-│ ├── 01_setup_init_vault.sh
-│ ├── 02_setup_unseal_vault.sh
-│ ├── 03_setup_generate_root_ca.sh
-│ ├── 04_setup_create_intermediate_ca.sh
-│ ├── 05_setup_configure_https.sh
-│ ├── 06_setup_test_and_validate.sh
-│ └── 07_setup_device_role.sh
-├── 03_WiseFido_CA_证书体系与文件命名规范.md
-├── 04_WiseFido_IoT_设备注册与证书签发流程.md
-├── 05_WiseFido_CA_方案对比与选型说明.md
-├── 06_WiseFido_CA_HIPAA_合规与风险评估.md
-│ └── patches/
-│ └── 06_patch_6.10_桥接到卷07.md ←（桥接段，承接卷 07）
-├── 07_WiseFido_CA_未来演进与可持续信任蓝图.md ←（分支起点，不推翻 00–06）
-└── README.md ←（本文件）
 
-**如遇到GITHUB上面目录树显示不正常，参考下面的目录树图**
-
-![项目目录树](01_docs/image/tree-1-readme.png)
-
+![项目目录树](/01_docs/image/tree-1-readme.png)
 
 ## 解读
 
