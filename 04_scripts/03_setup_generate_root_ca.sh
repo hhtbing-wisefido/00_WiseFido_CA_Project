@@ -11,19 +11,19 @@ export VAULT_SKIP_VERIFY=true
 # ==============================
 # 检查 Vault 是否可访问
 # ==============================
-echo "🔹 检查 Vault 内部 API 是否就绪..."
-for i in {1..10}; do
-  if curl -s http://127.0.0.1:8201/v1/sys/health >/dev/null 2>&1; then
-    echo "✅ Vault 内部接口可用。"
-    break
-  fi
-  echo "⏳ Vault 尚未响应 (${i}s)..."
-  sleep 2
-  if [[ $i -eq 10 ]]; then
-    echo "❌ Vault 无法连接，请检查容器状态。"
-    exit 1
-  fi
-done
+#echo "🔹 检查 Vault 内部 API 是否就绪..."
+#for i in {1..10}; do
+#  if curl -s http://127.0.0.1:8201/v1/sys/health >/dev/null 2>&1; then
+#    echo "✅ Vault 内部接口可用。"
+#    break
+#  fi
+#  echo "⏳ Vault 尚未响应 (${i}s)..."
+#  sleep 2
+#  if [[ $i -eq 10 ]]; then
+#    echo "❌ Vault 无法连接，请检查容器状态。"
+#    exit 1
+#  fi
+#done
 
 # ==============================
 # 启用 Root PKI 引擎
