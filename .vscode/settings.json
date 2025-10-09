@@ -30,5 +30,15 @@
     "git.autofetch": false,
     "git.autorefresh": true,
     "git.decorations.enabled": true,
-    "git.enableCommitSigning": false
+    "git.enableCommitSigning": false,
+    "git.useEditorAsCommitInput": false,
+    "git.inputValidation": false,
+    "git.allowForcePush": false,
+    "git.alwaysSignOff": false,
+    "git.promptToSaveFilesBeforeCommit": "always",
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.smartCommitChanges": "all",
+    "scm.inputFontFamily": "Consolas, 'Courier New', monospace",
+    "scm.inputFontSize": 13
 }
