@@ -1,24 +1,26 @@
-version: "3.8"
+version: "3.9"
 
 services:
   vault:
     image: vault:1.13.2
     container_name: wisefido-vault
     restart: always
-    ports:
-      - "8200:8200"
     cap_add:
       - IPC_LOCK
-
-    # 🧩 目录挂载：配置、数据、日志
-    volumes:
-      - ../02_config:/vault/config
-      - ./vault/data:/vault/data
-      - ./vault/logs:/vault/logs
-
+    ports:
+      - "8200:8200"
     environment:
-      - VAULT_ADDR=https://ca.wisefido.work:8200
-      - VAULT_API_ADDR=https://ca.wisefido.work:8200
-
-    # 🔧 启动命令：加载容器内的 /vault/config/01_vault.hcl
+      VAULT_ADDR: "https://0.0.0.0:8200"
+      VAULT_API_ADDR: "https://ca.wisefido.work:8200"
     command: vault server -config=/vault/config/01_vault.hcl
+    volumes:
+      # ✅ 使用绝对路径，防止路径解析错误
+      - /opt/00_WiseFido_CA_Project/02_config:/vault/config
+      - /opt/00_WiseFido_CA_Project/03_deploy/vault/data:/vault/data
+      - /opt/00_WiseFido_CA_Project/03_deploy/vault/logs:/vault/logs
+    # 推荐为 Vault 数据目录设置独立权限
+    user: root
+
+networks:
+  default:
+    driver: bridge
