@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # ============================================
-# WiseFido Vault 初始化脚本（最终稳定版）
-# - 自动生成 TLS 证书
+# WiseFido Vault 初始化脚本（修正版）
+# - 自动生成 TLS 证书（含权限修复）
 # - 自动修复挂载卷权限
 # - 自动检测 docker compose 文件
 # - 自动等待 Vault 启动
@@ -41,8 +41,16 @@ if [[ ! -f "$CERT_FILE" || ! -f "$KEY_FILE" ]]; then
     -keyout "$KEY_FILE" -out "$CERT_FILE" -days 365 \
     -subj "/C=US/ST=CA/L=SanFrancisco/O=WiseFido/OU=CA/CN=ca.wisefido.work"
   chmod 644 "$CERT_FILE"
-  chmod 600 "$KEY_FILE"
+  chmod 640 "$KEY_FILE"
+  chown 100:100 "$CERT_FILE" "$KEY_FILE" || true
   echo "✅ 临时证书生成完成: ${CERT_FILE}"
+else
+  # 即使证书存在，也确保权限正确
+  echo "🔹 检查 TLS 文件权限..."
+  chmod 644 "$CERT_FILE" || true
+  chmod 640 "$KEY_FILE" || true
+  chown 100:100 "$CERT_FILE" "$KEY_FILE" || true
+  echo "✅ TLS 权限检查完成。"
 fi
 
 # ====================================================
@@ -106,6 +114,6 @@ docker exec -e VAULT_SKIP_VERIFY=true -i wisefido-vault vault status || true
 
 echo "🎉 Vault 初始化流程全部完成！"
 echo "👉 请务必妥善保管初始化密钥和 Root Token！"
-echo "👉 你可以使用以下命令登录 Vault：
-echo "   docker exec -e VAULT_SKIP_VERIFY=true -it wisefido-vault vault login <Root Token>
-echo "👉 访问 Vault UI: https:/ca.wisefido.work:8200
+echo "👉 你可以使用以下命令登录 Vault："
+echo "   docker exec -e VAULT_SKIP_VERIFY=true -it wisefido-vault vault login <Root Token>"
+echo "👉 访问 Vault UI: https://ca.wisefido.work:8200"
