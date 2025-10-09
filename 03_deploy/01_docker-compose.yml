@@ -9,6 +9,9 @@ services:
       - IPC_LOCK
     ports:
       - "8200:8200"
+      - "8201:8201"
+
+      
     environment:
       VAULT_ADDR: "https://127.0.0.1:8200"
       VAULT_API_ADDR: "https://ca.wisefido.work:8200"
