@@ -2,11 +2,20 @@
 set -euo pipefail
 PROJECT_ROOT="/opt/00_WiseFido_CA_Project"
 
-echo "🔹 准备目录..."
+echo "🔹 创建 Vault 数据与日志目录结构..."
+mkdir -p "${PROJECT_ROOT}/03_deploy/vault"
+mkdir -p "${PROJECT_ROOT}/03_deploy/vault/data"
+mkdir -p "${PROJECT_ROOT}/03_deploy/vault/logs"
+chmod -R 755 "${PROJECT_ROOT}/03_deploy/vault"
+
+echo "🔹 创建 CA 输出目录结构..."
+mkdir -p "${PROJECT_ROOT}/05_opt"
+mkdir -p "${PROJECT_ROOT}/05_opt/01_wisefido-ca"
 mkdir -p "${PROJECT_ROOT}/05_opt/01_wisefido-ca/01_root"
 mkdir -p "${PROJECT_ROOT}/05_opt/01_wisefido-ca/02_intermediate"
 mkdir -p "${PROJECT_ROOT}/05_opt/01_wisefido-ca/03_issued/01_devices"
 mkdir -p "${PROJECT_ROOT}/05_opt/01_wisefido-ca/04_crl"
+chmod -R 755 "${PROJECT_ROOT}/05_opt/01_wisefido-ca"
 
 # 若无正式 TLS 证书，则生成临时自签证书
 if [[ ! -f "${PROJECT_ROOT}/02_config/vault_cert.pem" || ! -f "${PROJECT_ROOT}/02_config/vault_key.pem" ]]; then
@@ -24,5 +33,6 @@ docker compose up -d
 echo "🔹 初始化 Vault..."
 docker exec -i wisefido-vault vault operator init -key-shares=3 -key-threshold=2 \
   > "${PROJECT_ROOT}/05_opt/01_wisefido-ca/01_root/vault_init_keys.txt"
+
 
 echo "✅ 完成：vault_init_keys.txt 已生成，请立即离线备份！"
