@@ -1,7 +1,9 @@
 # 强制忽略 Windows 系统文件
 desktop.ini
 Thumbs.db
-
+# Windows system files
+[Dd]esktop.ini
+Thumbs.db
 # 强制忽略 百度网盘的临时文件
 *.baiduyun.uploading.cfg
 *.baiduyun.downloading.cfg
