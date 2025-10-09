@@ -19,5 +19,5 @@ storage "file" {
 
 # 🌐 API 地址配置（与 Compose 环境变量一致）
 api_addr = "https://ca.wisefido.work:8200"
-cluster_addr = "https://ca.wisefido.work:8201"
+cluster_addr = "https://127.0.0.1:8201"
 
