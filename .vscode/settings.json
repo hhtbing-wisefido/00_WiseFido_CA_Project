@@ -1,4 +1,34 @@
 {
     "markdown-preview-enhanced.plantumlJarPath": "",
-    "markdown-preview-enhanced.plantumlServer": "https://kroki.io/plantuml/svg/"
+    "markdown-preview-enhanced.plantumlServer": "https://kroki.io/plantuml/svg/",
+    "python.terminal.activateEnvironment": false,
+    "python.defaultInterpreterPath": "python",
+    "python.venvPath": "",
+    "python.envFile": "",
+    "python.terminal.executeInFileDir": false,
+    "python.analysis.autoImportCompletions": false,
+    "python.analysis.autoSearchPaths": false,
+    "python.createEnvironment.trigger": "off",
+    "python.createEnvironment.contentButton": "hide",
+    "pythonEnvironments.create.provider": "off",
+    "python.interpreter.infoVisibility": "never",
+    "python.showStartPage": false,
+    "python.experiments.enabled": false,
+    "python.disableInstallationCheck": true,
+    "python.poetryPath": "",
+    "python.condaPath": "",
+    "python.pipenvPath": "",
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/.venv/**": true,
+        "**/venv/**": true,
+        "**/__pycache__/**": true
+    },
+    "files.autoSave": "onFocusChange",
+    "git.autofetch": false,
+    "git.autorefresh": true,
+    "git.decorations.enabled": true,
+    "git.enableCommitSigning": false
 }
