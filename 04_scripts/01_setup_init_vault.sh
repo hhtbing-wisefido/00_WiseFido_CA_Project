@@ -2,10 +2,11 @@
 set -euo pipefail
 
 # ============================================
-# WiseFido Vault 初始化脚本（增强版）
+# WiseFido Vault 初始化脚本（最终稳定版）
+# - 自动生成 TLS 证书
 # - 自动修复挂载卷权限
+# - 自动检测 docker compose 文件
 # - 自动等待 Vault 启动
-# - 跳过 TLS 校验
 # ============================================
 
 # 自动识别路径
@@ -27,7 +28,25 @@ mkdir -p "${PROJECT_ROOT}/05_opt/01_wisefido-ca"/{01_root,02_intermediate,03_iss
 chmod -R 755 "${PROJECT_ROOT}/05_opt/01_wisefido-ca"
 
 # ====================================================
-# 2️⃣ 自动修复权限（防止 /vault/data permission denied）
+# 2️⃣ 检查并生成 TLS 证书（防止 Vault 启动失败）
+# ====================================================
+CONFIG_DIR="${PROJECT_ROOT}/02_config"
+CERT_FILE="${CONFIG_DIR}/vault_cert.pem"
+KEY_FILE="${CONFIG_DIR}/vault_key.pem"
+
+if [[ ! -f "$CERT_FILE" || ! -f "$KEY_FILE" ]]; then
+  echo "⚠️  未检测到 Vault TLS 证书，自动生成临时自签证书..."
+  mkdir -p "$CONFIG_DIR"
+  openssl req -x509 -newkey rsa:2048 -nodes \
+    -keyout "$KEY_FILE" -out "$CERT_FILE" -days 365 \
+    -subj "/C=US/ST=CA/L=SanFrancisco/O=WiseFido/OU=CA/CN=ca.wisefido.work"
+  chmod 644 "$CERT_FILE"
+  chmod 600 "$KEY_FILE"
+  echo "✅ 临时证书生成完成: ${CERT_FILE}"
+fi
+
+# ====================================================
+# 3️⃣ 自动修复挂载卷权限
 # ====================================================
 echo "🔹 检查并修复 Vault 挂载卷权限..."
 sudo chown -R 100:100 "${PROJECT_ROOT}/03_deploy/vault" || true
@@ -35,26 +54,37 @@ sudo chmod -R 770 "${PROJECT_ROOT}/03_deploy/vault" || true
 echo "✅ 权限检查与修复完成。"
 
 # ====================================================
-# 3️⃣ 启动 Vault 容器
+# 4️⃣ 启动 Vault 容器
 # ====================================================
+DOCKER_FILE="${PROJECT_ROOT}/03_deploy/01_docker-compose.yml"
+if [[ ! -f "$DOCKER_FILE" ]]; then
+  echo "❌ 错误：未找到 docker compose 文件：${DOCKER_FILE}"
+  exit 1
+fi
+
 echo "🔹 启动 Vault 容器..."
-docker compose -f "${PROJECT_ROOT}/03_deploy/01_docker-compose.yml" up -d
+docker compose -f "$DOCKER_FILE" up -d
 
 # ====================================================
-# 4️⃣ 等待 Vault 服务就绪
+# 5️⃣ 等待 Vault 服务就绪
 # ====================================================
 echo "🔹 等待 Vault 服务启动中..."
 for i in {1..30}; do
-  if docker exec -e VAULT_SKIP_VERIFY=true wisefido-vault vault status >/dev/null 2>&1; then
+  if curl -sk https://127.0.0.1:8200/v1/sys/health >/dev/null 2>&1; then
     echo "✅ Vault 已启动！"
     break
   fi
   echo "⏳ Vault 尚未就绪，等待中 (${i}s)..."
   sleep 2
+  if [[ $i -eq 30 ]]; then
+    echo "❌ Vault 启动超时，请检查容器日志："
+    docker logs wisefido-vault | tail -n 20
+    exit 1
+  fi
 done
 
 # ====================================================
-# 5️⃣ 初始化 Vault（仅在未初始化时执行）
+# 6️⃣ 初始化 Vault（仅在未初始化时执行）
 # ====================================================
 STATUS=$(docker exec -e VAULT_SKIP_VERIFY=true wisefido-vault vault status 2>/dev/null || true)
 
@@ -69,9 +99,13 @@ else
 fi
 
 # ====================================================
-# 6️⃣ 状态确认
+# 7️⃣ 状态确认
 # ====================================================
 echo "🔹 检查 Vault 状态..."
 docker exec -e VAULT_SKIP_VERIFY=true -i wisefido-vault vault status || true
 
-echo "✅ 初始化流程全部完成！"
+echo "🎉 Vault 初始化流程全部完成！"
+echo "👉 请务必妥善保管初始化密钥和 Root Token！"
+echo "👉 你可以使用以下命令登录 Vault：
+echo "   docker exec -e VAULT_SKIP_VERIFY=true -it wisefido-vault vault login <Root Token>
+echo "👉 访问 Vault UI: https:/ca.wisefido.work:8200
