@@ -39,6 +39,35 @@
     "git.confirmSync": false,
     "git.enableSmartCommit": true,
     "git.smartCommitChanges": "all",
+    "git.experimental.generateCommitMessagePrompt": "auto",
+    "git.experimental.generateCommitMessageLength": "medium",
+    "git.experimental.generateCommitMessageStyle": "conventional",
+    "git.generateCommitMessage": "enabled",
+    "scm.experimental.showCommitMessageInGenerateAction": true,
+    "git.scanRepositories": [],
+    "git.detectSubmodules": false,
+    "git.ignoreLegacyWarning": true,
+    "git.ignoreRebaseWarning": true,
+    "git.ignoreMissingGitWarning": true,
+    "git.repositoryScanMaxDepth": 1,
+    "files.useExperimentalFileWatcher": true,
+    "files.watcherUsePolling": false,
+    "files.watcherDefaultUsePolling": false,
+    "github.copilot.enable": {
+        "*": true,
+        "yaml": true,
+        "plaintext": true,
+        "markdown": true,
+        "scminput": true
+    },
+    "github.copilot.advanced": {
+        "inlineSuggestEnable": true
+    },
+    "scm.alwaysShowActions": true,
+    "scm.alwaysShowRepositories": true,
+    "scm.autoReveal": true,
+    "scm.defaultViewMode": "tree",
+    "scm.repositories.visible": 5,
     "scm.inputFontFamily": "Consolas, 'Courier New', monospace",
     "scm.inputFontSize": 13
 }
